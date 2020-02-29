@@ -7,9 +7,7 @@ private:
   vex::motor LFMotor = DTFrontLeftMotor;
   vex::motor RBMotor = DTBackRightMotor;
   vex::motor LBMotor = DTBackLeftMotor;
-  vex::gyro Gyro = GyroHunters;
   vex::sonar HunterDist = DistanceSensor;
-  vex::sonar HunterDist2 = DistanceSensor2;
   vex::inertial Inertial = huntersInertial;
 
   // global variables
