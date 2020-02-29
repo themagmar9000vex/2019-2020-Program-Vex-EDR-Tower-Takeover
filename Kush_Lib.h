@@ -22,14 +22,6 @@ class StorageTray{
       return(trayRestingPosition);
     }
 
-     int16_t getTrayUnfoldingPosition() {
-      return(trayUnfoldingPosition);
-    }
-    
-   int16_t getTrayArmReleasePosition() {
-      return(trayArmReleasePosition);
-    }
-
     double getTrayPotValue() {
       return(potentiometerTray.value(vex::rotationUnits::deg));
     }
