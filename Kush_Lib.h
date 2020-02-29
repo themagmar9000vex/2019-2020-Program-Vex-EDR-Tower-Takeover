@@ -8,8 +8,6 @@ class StorageTray{
     double velocity = 65;  
     int16_t trayScoringPosition = 103; //potentiomer value to Score
     int16_t trayRestingPosition = 13; //potentiomer value for Tray at rest
-   int16_t trayUnfoldingPosition = 24; //potentiomer value for Tray at rest
-    int16_t trayArmReleasePosition = 33; //potentiomer value for Tray to free the Arm
   
   public:
     void setSpeed(double NewVelocity) {
