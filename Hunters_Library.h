@@ -3,44 +3,6 @@
 #include "Kush_Lib.h"
 #include "claw.h"
 
-// Function combined  in a task so they run concurently 
-int ArmUpTrayMedium () {
- double armPosition = arm.getPosition();
-  arm.setSpeed(70);
-  while (armPosition >= arm.getMediumTowerPosition()){
-    arm.moveUp();
-    armPosition = arm.getPosition();
-   }
-   arm.stop();
-  return (0);
-}
-
-// Function combined  in a task so they run concurently 
-int ArmUpTrayAlliance () {
- double armPosition = arm.getPosition();
-  arm.setSpeed(70);
-  while (armPosition >= arm.getAllianceTowerPosition()){
-    arm.moveUp();
-    armPosition = arm.getPosition();
-   }
-   arm.stop();
-  return (0);
-}
-// Function combined  in a task so they run concurently 
-int ArmUpTrayPush() {
-  double trayPosition = Tray.getTrayPotValue();
-
-  while (trayPosition <= Tray.getTrayArmReleasePosition()){
-  Tray.setSpeed(90); 
-  Tray.RotateTray(vex::directionType::fwd);
-  trayPosition = Tray.getTrayPotValue();
-  
-  }
- Tray.StopTray(vex::brakeType::hold);
- return(0);
-}
-
-
 
 int activateClaw() {
   claw.setSpeed(100);
