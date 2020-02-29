@@ -25,8 +25,12 @@ public:
   void setSpeed(double speed) { DTSpeed = speed; }
 
   // returns the position of the right front motor
-  int getPosition() {
+  double getPositionInches() {
     return (RFMotor.rotation(vex::rotationUnits::deg) / degreePerInch);
+  }
+
+  double getPositionDegrees(){
+    return RFMotor.rotation(vex::rotationUnits::deg);
   }
 
   // returns the value (in inches) from the front distance sensor
@@ -43,6 +47,13 @@ public:
     LFMotor.spin(vex::directionType::rev, speedY + speedX + speedR, vex::pct);
     RBMotor.spin(vex::directionType::rev, -speedY - speedX + speedR, vex::pct);
     LBMotor.spin(vex::directionType::rev, speedY - speedX + speedR, vex::pct);
+  }
+
+  void specificDrive(double speedRF, double speedRB, double speedLF, double speedLB){
+    RFMotor.spin(vex::directionType::rev, speedRF, vex::pct);
+    LFMotor.spin(vex::directionType::rev, speedLF, vex::pct);
+    RBMotor.spin(vex::directionType::rev, speedRB, vex::pct);
+    LBMotor.spin(vex::directionType::rev, speedLB, vex::pct);
   }
 
   // moves the robot forward
@@ -142,7 +153,7 @@ public:
 
         rotTraveled = abs(RFMotor.rotation(vex::rotationUnits::deg));
       }
-      Brain.Screen.printAt(20, 80, "DT inches: %f", getPosition());
+      Brain.Screen.printAt(20, 80, "DT inches: %f", getPositionInches());
     }
     stopHold();
   }
@@ -165,7 +176,7 @@ public:
 
         rotTraveled = abs(RFMotor.rotation(vex::rotationUnits::deg));
       }
-      Brain.Screen.printAt(20, 80, "DT inches: %f", getPosition());
+      Brain.Screen.printAt(20, 80, "DT inches: %f", getPositionInches());
     }
     stopHold();
   }
@@ -221,78 +232,6 @@ public:
 
   double getHeadingFromInertial() { return Inertial.heading(); }
 
-  // Turn right in degrees using gyro and PID
-  void GyroTurnRight(double degrees) {
-
-    double ProportionalConstant = 0.75;
-    double IntegralConsant = 0.001;
-    double DerivativeConstant = 0.1;
-
-    double errorPrevious = 0;
-    double current = getGyro();
-
-    while (current < degrees) {
-      double currentDegrees = current;
-      double error = degrees - currentDegrees;
-      double errorTotal = errorTotal + error;
-      if (error == 0) {
-        errorTotal = 0;
-      }
-      double errorPrediction = errorPrevious - error;
-      if (errorPrevious == 0) {
-        errorPrediction = 0;
-      }
-      errorPrevious = error;
-
-      double speedTurn =
-          (ProportionalConstant * error + IntegralConsant * errorTotal +
-           DerivativeConstant * errorPrediction);
-
-      setSpeed(speedTurn);
-      TurnClockwise();
-      current = getGyro();
-      wait(100, vex::msec);
-    }
-    stopHold();
-  }
-
-  // Turn left in degrees using gyro and PID
-  void GyroTurnLeft(double degrees) {
-
-    double ProportionalConstant = 0.75;
-    double IntegralConsant = 0.001;
-    double DerivativeConstant = 0.1;
-
-    double errorPrevious = 0;
-    double current = getGyro();
-    if (current == 0) {
-      TurnCounterClockwise();
-      wait(400, vex::msec);
-      stopHold();
-    }
-
-    while (current > degrees) {
-      double currentDegrees = current;
-      double error = currentDegrees - degrees;
-      double errorTotal = errorTotal + error;
-      if (error == 0) {
-        errorTotal = 0;
-      }
-      double errorPrediction = errorPrevious - error;
-      errorPrevious = error;
-
-      double speedTurn =
-          (ProportionalConstant * error + IntegralConsant * errorTotal +
-           DerivativeConstant * errorPrediction);
-
-      setSpeed(speedTurn);
-      TurnCounterClockwise();
-      current = getGyro();
-      wait(100, vex::msec);
-    }
-    stopHold();
-  }
-
   // checks whether the turn right completed
   void check1() {
     while (Inertial.heading() == !90) {
@@ -325,6 +264,47 @@ public:
 
   // resets the inertial sensor's readings
   void resetIntertialRotation() { Inertial.resetRotation(); }
+
+
+  void ForwardPID(double speed, double inches, double targetDegrees){
+    double targetrotations = (inches / circumferenceofWheel) * 360;
+    resetPositionDT();
+    resetIntertialRotation();
+
+    double ProportionalConstant = 5;
+    double IntegralConsant = 0.01;
+    double DerivativeConstant = 1;
+
+    double errorPrevious = 0;
+    double currentDegrees = getInertialDegrees();
+    double currentRotation = abs(getPositionDegrees());
+
+    double RSpeed = -speed;
+    double LSpeed = speed;
+
+    while(currentRotation < targetrotations){
+      specificDrive(RSpeed, RSpeed, LSpeed, LSpeed);  
+
+      double error = targetDegrees - currentDegrees;
+      double errorTotal = errorTotal+error;
+      if(error=0){errorTotal=0;}
+      double errorPrediction = errorPrevious - error;
+      if(error=0){errorPrediction=0;}
+      errorPrevious = error;
+
+      double changeSpeed = ProportionalConstant * error + IntegralConsant * errorTotal + DerivativeConstant * errorPrediction;
+
+      LSpeed += changeSpeed;
+      RSpeed -= changeSpeed;
+
+      specificDrive(RSpeed, RSpeed, LSpeed, LSpeed);  
+
+      currentRotation = abs(getPositionDegrees());
+      currentDegrees = getInertialDegrees();
+      wait(100,vex::msec);
+    }
+    stopHold();
+  }
 
   // Turn right in degrees using inertial sensor and PID
   void InertialTurnRight(double degrees) {
