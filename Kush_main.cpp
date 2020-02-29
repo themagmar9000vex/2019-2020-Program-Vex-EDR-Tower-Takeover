@@ -23,7 +23,6 @@ brainPrinting.setPriority(10);
 DT.calibrate();
 
 //Get Preload and Sideways
-//Unfold
 vex::task startClaw(activateClaw);
 DT.setSpeed(30);
 DT.moveInch(5,'F');
@@ -45,6 +44,7 @@ wait(750,msec);
 task::stop(activateClaw);
 claw.Stop(vex::brakeType::hold); 
 
+//Go To Scoring Zone and Score
 DT.moveInch(21,'B');
 DT.InertialTurnLeft(-180);
 DT.setSpeed(30);
