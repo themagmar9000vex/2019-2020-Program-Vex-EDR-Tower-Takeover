@@ -6,7 +6,6 @@ using namespace vex;
 int display() { // Centralizes the inf    o printed on the Brain Screen
     Brain.Screen.setFont(fontType::mono20);
     while (1){
-    Brain.Screen.printAt(20,60,"Gyro Value: %f", DT.getGyro()); 
     Brain.Screen.printAt(20,40,"Interial Value: %f", DT.getInertialDegrees());
     Brain.Screen.printAt(20,80,"Pitch Value: %f", DT.getPitch());
     Brain.Screen.printAt(20,100,"Roll Value: %f", DT.getRoll());
