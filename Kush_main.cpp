@@ -19,7 +19,6 @@ int display() { // Centralizes the inf    o printed on the Brain Screen
 
 int main() {
 vex::task brainPrinting(display);
-brainPrinting.setPriority(10);
 DT.calibrate();
 
 //Get Preload and Sideways
