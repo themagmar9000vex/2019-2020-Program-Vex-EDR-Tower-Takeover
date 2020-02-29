@@ -52,11 +52,4 @@ wait(500,msec);
 DT.sidewaysInch(16,'L');
 DT.moveInch(10,'F');
 scoreStack();
-DT.moveInch(1, 'B');
- claw.moveDown();
- wait(300, msec);
- claw.Stop(vex::brakeType::hold);
- Tray.MoveTray(-0.3);
- DT.moveInch(6, 'B');
-
 }
