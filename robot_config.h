@@ -14,10 +14,6 @@ vex::motor ArmMotor(vex::PORT13, vex::gearSetting::ratio36_1, true);
 
 vex::inertial InertialSensor(vex::PORT2);
 vex::sonar DistanceSensor = vex::sonar(Brain.ThreeWirePort.B);
-vex::sonar DistanceSensor2 = vex::sonar(Brain.ThreeWirePort.F);
 vex::pot StoragePotentiometer = vex::pot(Brain.ThreeWirePort.D);
 
-vex::gyro GyroHunters = vex::gyro(Brain.ThreeWirePort.G);
-
 vex::controller ControllerA = vex::controller();
-vex::controller ControllerB = vex::controller();
